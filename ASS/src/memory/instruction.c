@@ -1,6 +1,5 @@
 #include"instruction.h"
-#include"cpu/mmu.h"
-#include"cpu/register.h"
+
 
 static uint64_t decode_od(od_t od)
 {
@@ -110,15 +109,25 @@ void mov_reg_mm_handler(uint64_t src, uint64_t dst)
     regs.rip = regs.rip + sizeof(inst_t);
     
 
+
 }
 void mov_mm_reg_handler(uint64_t src, uint64_t dst)
 {
     //将内存中的值写入寄存器
-    wirte64bits_dram(dst,read64bits_dram(va2pa(src)));
+    *(uint64_t *)dst = read64bits_dram(va2pa(src));
     regs.rip = regs.rip + sizeof(inst_t);
 
 
 }
+
+void pop_handler(uint64_t src, uint64_t dst)
+{
+    *(uint64_t *) src = read64bits_dram(va2pa(regs.rsp));
+    regs.rsp +=8;
+    regs.rip = regs.rip + sizeof(inst_t);
+
+}
+
 
 
 //call指令的实现：rip 中存放的是指令的地址，rsp中存放的是栈顶的地址
@@ -131,9 +140,23 @@ void call_handler(uint64_t src, uint64_t dst)
     regs.rsp -= 8;
 
     wirte64bits_dram(va2pa(regs.rsp),regs.rip + sizeof(inst_t));
+    regs.rip = regs.rip + sizeof(inst_t);
+
 
     regs.rip = src;
 }
+
+
+
+void ret_handler(uint64_t src, uint64_t dst){
+    uint64_t addr = read64bits_dram(va2pa(regs.rsp));
+    regs.rsp += 8;
+    regs.rip = addr;
+    
+}
+
+
+
 
 void init_handler_table(){
     handler_table[add_REG_REG] = &add_REG_REG_handler;
@@ -142,7 +165,9 @@ void init_handler_table(){
     handler_table[mov_mm_reg] = &mov_mm_reg_handler;
     handler_table[CALL] = &call_handler;
     handler_table[push] = &push_handler;
-
+    handler_table[pop] = &pop_handler;
+    handler_table[ret] = &ret_handler;
+    
 }
 
 

@@ -6,7 +6,8 @@
 #include<stdint.h>
 #include<stdio.h>
 #include<memory/dram.h>
-
+#include"cpu/mmu.h"
+#include"cpu/register.h"
 #define NUM_INSTRTYPE 30
 
 
@@ -85,5 +86,7 @@ void call_handler(uint64_t src, uint64_t dst);
 void push_handler(uint64_t src, uint64_t dst);
 void mov_reg_mm_handler(uint64_t src, uint64_t dst);
 void mov_mm_reg_handler(uint64_t src, uint64_t dst);
+void pop_handler(uint64_t src, uint64_t dst);
+void ret_handler(uint64_t src, uint64_t dst);
 
   #endif

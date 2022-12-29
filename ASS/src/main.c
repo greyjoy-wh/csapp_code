@@ -32,7 +32,7 @@ int main(){
     //run
       print_reg();
         print_stack();
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 15; i++){
         instruction_cycle(); 
         print_reg();
         print_stack();
@@ -59,12 +59,17 @@ int main(){
         printf("register is wrong\n");
     }
 
-    match = match && (mm[va2pa(0x7fffffffdf00)] == 0x0);
-    match = match && (mm[va2pa(0x7fffffffdf08)] == 0x12340000);
-    match = match && (mm[va2pa(0x7fffffffdf10)] == 0xabcd);
-    match = match && (mm[va2pa(0x7fffffffdf18)] == 0x1234abcd);
-    match = match && (mm[va2pa(0x7fffffffdf20)] == 0x0);
-    
+    match = match && (read64bits_dram(va2pa(0x7fffffffdf00)) == 0x0);
+    match = match && (read64bits_dram(va2pa(0x7fffffffdf08)) == 0x12340000);
+    match = match && (read64bits_dram(va2pa(0x7fffffffdf10)) == 0xabcd);
+    match = match && (read64bits_dram(va2pa(0x7fffffffdf18)) == 0x1234abcd);
+    match = match && (read64bits_dram(va2pa(0x7fffffffdf20)) == 0x0);
+    // match = match && (mm[va2pa(0x7fffffffdf08)] == 0x12340000);
+    //match = match && (mm[va2pa(0x7fffffffdf10)] == 0xabcd);
+    // match = match && (mm[va2pa(0x7fffffffdf18)] == 0x1234abcd);
+    // match = match && (mm[va2pa(0x7fffffffdf20)] == 0x0);
+
+
     if(match)
     {
         printf("memory is right\n");
